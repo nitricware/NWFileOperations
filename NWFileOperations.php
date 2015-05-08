@@ -13,58 +13,38 @@
 		Development started
 		14. January 2013
 		
+		Github release
+		8. May 2015
+		
 		This is a function set for
 		file operations like move,
 		delete, rename.
 	*/
 	
-	function NWFileInfo($file){
-		$file = NWPathComplete($file);
-		if (!file_exists($file)){
-			if (DEBUG) NWWriteLog("File does not exist.");
-			return false;
-		}
+	/*
+		Switch debug mode on and off.
 		
-		return pathinfo($file);
-	}
+		If on, logs will be written using NWLog Functions.
+	*/
 	
-	function NWIsSysFile($file){
-		
-		NWWriteLog($file);
-		$file = NWPathComplete(strtolower($file));
-		
-		NWWriteLog($file);
-		
-		foreach (unserialize(SYSFILES) as $sysfiles){
-			if (strpos($sysfiles, $file) !== false){
-				return true;
-			}
-		}
-		
-		if (strpos($file, "./system/") !== false){
-			return true;
-		}
-		
-		if (trim($file) == "./"){
-			return true;
-		}
-		
-		return false;
-	}
+	define("DEBUG", false);
 	
-	function NWFileExists($filename,$extension,$path=CURRENT_DIR){
-		if (!$path = NWPathComplete($path)) return false;
-		if (file_exists("$path$filename.$extension")) return "$path$filename.$extension";
-		return false;
-	}
+	/*
+		NWPathComplete (v1.0)
+			Completes a given path to match the following pattern:
+			./path/
+		
+		$path
+			the path to complete, path must exist.
+	*/
 	
 	function NWPathComplete($path){
 		$path = trim($path);
 		if (substr($path,0,1) == "/"){
 			$path = substr($path,1);
 		}
-		if (file_exists(CURRENT_DIR.$path) AND substr($path,0,2) != "./"){
-			$path = CURRENT_DIR.$path;
+		if (file_exists($path) AND substr($path,0,2) != "./"){
+			$path = $path;
 			if(!is_file($path) and substr($path,-1) != "/"){
 				$path = "$path/";
 			}
@@ -85,52 +65,18 @@
 		return false;
 	}
 	
-	function NWChangeDirectory($newPath){
+	/*
+		NWDelete (v1.0)
+			Deletes an object.
 		
-		if ($newPath == "."){
-			$newPath = "./";
-		}
-		
-		if ($newPath == ".."){
-			$newPath = dirname(CURRENT_DIR)."/";
-		}
-		
-		if (substr($newPath, -1) != "/"){
-			$newPath = "$newPath/";
-		}
-		
-		if (!file_exists($newPath) AND !file_exists(CURRENT_DIR.$newPath)){
-			if (DEBUG) NWWriteLog("Directory $newPath and ".CURRENT_DIR.$newPath." do not exist.");
-			return false;
-		}
-		
-		writeToFile:
-		if (strpos($newPath, "./") !== 0){
-			$newPath = CURRENT_DIR.$newPath;
-		}
-		
-		if (!file_put_contents("./System/Library/Databases/curdir.set", $newPath)){
-			if (DEBUG) NWWriteLog("Error writing to file.");
-			return false;
-		} else {
-			return true;
-		}
-			
-	}
+		$object
+			the object to remove
+	*/
 	
-	function cd($newPath){
-		return NWChangeDirectory($newPath);
-	}
-	
-	function NWDelete($object, $security = true){
+	function NWDelete($object){
 		if (!$object = NWPathComplete($object)){
 			if (DEBUG) NWWriteLog("Error completing path.");
 			return false;
-		}
-		
-		if (NWIsSysFile($object) AND $security){
-			if (DEBUG) NWWriteLog("You tried to delete a system file.");
-			return false;	
 		}
 		
 		if (!is_dir($object)){
@@ -154,22 +100,26 @@
 		return true;
 	}
 	
-	function NWFileOutput($object){
-		if (!$object = NWPathComplete($object)){
-			if (DEBUG) NWWriteLog("Error completing path.");
-			return false;
-		}
+	/*
+		NWCreate (v1.0)
+			Creates an object.
 		
-		if (is_file($object)){
-			$pathinfo = pathinfo($object);
-			return "<a href=\"$object\" target=\"_blank\">".$pathinfo["basename"]."</a>";
-		}
-		
-		if (DEBUG) NWWriteLog("Requested Object is not a file.");
-		return false;
-	}
+		$filename
+			the filename of the object to create
+			
+		$path
+			the path to the object
+			
+		$content
+			the content of the object
+			
+		$plusone
+			true: if $filename exists, _n will be added while
+				$filename_n exists
+			false: produces error if $filename exists
+	*/
 	
-	function NWCreate($filename, $path = CURRENT_DIR, $content="", $plusone = true){
+	function NWCreate($filename, $path = "./", $content="", $plusone = true){
 		
 		if (!$path = NWPathComplete($path)){
 			if (DEBUG) NWWriteLog("Couldn't resolve path.");
@@ -195,7 +145,18 @@
 		return $file;
 	}
 	
-	function NWMKDir($dirName, $path=CURRENT_DIR){
+	/*
+		NWMKDir (v1.0)
+			Creates a directory.
+		
+		$dirName
+			the name of the directory to create
+			
+		$path
+			the path to the new directory
+	*/
+	
+	function NWMKDir($dirName, $path="./"){
 		if (!$path = NWPathComplete($path)){
 			if (DEBUG) NWWriteLog("Couldn't resolve path.");
 			return false;
@@ -215,15 +176,18 @@
 		return true;
 	}
 	
-	function NWEmptyDir($object = CURRENT_DIR){
+	/*
+		NWEmptyDir (v1.0)
+			Deletes all contents of the given directory
+		
+		$object
+			the name of the directory to clear
+	*/
+	
+	function NWEmptyDir($object = "./"){
 		if (!$object = NWPathComplete($object)){
 			if (DEBUG) NWWriteLog("Error completing path.");
 			return false;
-		}
-		
-		if (NWIsSysFile($object)){
-			if (DEBUG) NWWriteLog("You tried to delete a system file.");
-			return false;	
 		}
 		
 		$scanDir = scandir($object);
@@ -238,7 +202,19 @@
 		return true;
 	}
 	
-	function NWListDir($dir = CURRENT_DIR, $showHidden = false){
+	/*
+		NWListDir (v1.0)
+			Lists the contents of a directory
+		
+		$dir
+			the name of the directory to list
+			
+		$showHidden
+			true: shows files and directories starting with .
+			flase: does not
+	*/
+	
+	function NWListDir($dir = "./", $showHidden = false){
 		
 		if(!file_exists($dir)){
 			if (DEBUG) NWWriteLog("Requested directory does not exist.");
@@ -262,9 +238,21 @@
 		return $directoryList;
 	}
 	
-	function ls($dir = CURRENT_DIR, $showHidden = false){
+	/*
+		Alias for NWListDir()
+	*/
+	
+	function ls($dir = "./", $showHidden = false){
 		return NWListDir($dir,$showHidden);
 	}
+	
+	/*
+		NWFileSize (v1.0)
+			Returns an array with the filesize in B, KB and MB
+		
+		$object
+			the name of the object
+	*/
 	
 	function NWFileSize($object){
 		if (!$object = NWPathComplete($object)){
@@ -292,6 +280,27 @@
 		
 		return $return;
 	}
+	
+	/*
+		NWCopy (v1.0)
+			Copies an object.
+			
+		$source
+			the object to copy. Must be a full path
+			
+		$destination
+			false: duplicates $source
+			string: copies $source to $destination
+				if $destination does not start with "./",
+				function assumes $destination is inside
+				$source
+				"folder/" will be interpreted as "$source/folder/"
+				"./folder/" will be interpreted as "./folder"
+			
+		$overwrite
+			false: uses NWPlusOne to append a number
+			true: overwrites $destination if it already exists
+	*/
 	
 	function NWCopy($source=false, $destination=false, $overwrite=false){
 		if (!$source){
@@ -340,7 +349,21 @@
 		return true;
 	}
 	
-	function NWRename($oldname,$newname,$path = CURRENT_DIR){
+	/*
+		NWRename (v1.0)
+			Renames an object.
+		
+		$oldname
+			the old name of the object
+		
+		$newname
+			the new name of the object
+		
+		$path
+			the path to the object
+	*/
+	
+	function NWRename($oldname,$newname,$path = "./"){
 		if (!$path = NWPathComplete($path)){
 			if (DEBUG) NWWriteLog("Couldn't resolve path.");
 			return false;
@@ -365,7 +388,21 @@
 		return true;
 	}
 	
-	function NWMove($filename, $newpath, $oldpath=CURRENT_DIR){
+	/*
+		NWMove (v1.0)
+			Moves an object.
+		
+		$filename
+			the name of the object
+		
+		$newpath
+			the new path to the object
+		
+		$oldpath
+			the old path to the object
+	*/
+	
+	function NWMove($filename, $newpath, $oldpath="./"){
 		if (!$oldpath = NWPathComplete($oldpath)){
 			if (DEBUG) NWWriteLog("Couldn't resolve old path.");
 			return false;
@@ -388,7 +425,18 @@
 		return true;
 	}
 	
-	function NWCountLines ($filename, $dir=CURRENT_DIR){
+	/*
+		NWCountLines (v1.0)
+			Counts the lines of a file.
+		
+		$filename
+			the name of the object
+
+		$dir
+			the path to the object
+	*/
+	
+	function NWCountLines ($filename, $dir="./"){
 		$filename = trim($filename);
 		if (!$dir = NWPathComplete($dir)){
 			if (DEBUG) NWWriteLog("Couldn't resolve path '$dir'.");
@@ -404,7 +452,24 @@
 		return count($linesArr);
 	}
 	
-	function NWReadFileToLine($file, $lineEnd = 0, $lineStart = 0, $path=CURRENT_DIR){
+	/*
+		NWReadFileToLine (v1.0)
+			Reads a portion of a file from and to a specified line
+		
+		$file
+			the name of the object
+
+		$lineEnd
+			indicates the line where the function must stop reading
+			
+		$lineStart
+			indicates the line where the function must star reading
+		
+		$path
+			the path to the object
+	*/
+	
+	function NWReadFileToLine($file, $lineEnd = 0, $lineStart = 0, $path="./"){
 	
 		$lineEnd = $lineEnd - 1;
 	
@@ -438,5 +503,62 @@
 		
 		
 		return implode("", $returnArray);
+	}
+	
+	/*
+		NWPlusOne (v1.0)
+			Appends a number to a file while filename already exists
+		
+		$file
+			the name of the object
+					
+		$directory
+			the path to the object
+			
+		$sub_opt
+			false: underscore is used to seperate the number
+				from the filename like "file_1", "file_2"
+			true: space is used to seperate the number from
+				the filename like "file 1", "file 2"
+	*/
+	
+	function NWPlusOne($file, $directory="./", $sub_opt = false){
+		$appender = 1;
+		if ($sub_opt){
+			$sub = "_";
+		} else {
+			$sub = " ";
+		}
+		
+		$pathinfo = pathinfo($directory.$file);
+		$filename = $pathinfo["filename"];
+		if (array_key_exists("extension", $pathinfo)){
+			$extension = $pathinfo["extension"];
+		} else {
+			$extension = "";	
+		}
+		if ($extension != ""){
+			$filename_check = $directory.$filename.$sub.$appender.".".$extension;
+		} else {
+			$filename_check = $directory.$filename.$sub.$appender;
+		}
+		if (file_exists($directory.$file)){
+			while (file_exists($filename_check)){
+				$appender++;
+				if ($extension != ""){
+					$filename_check = $directory.$filename.$sub.$appender.".".$extension;
+				} else {
+					$filename_check = $directory.$filename.$sub.$appender;
+				}
+			}	
+		} else {
+			if ($extension != ""){
+				$filename_check = $directory.$filename.".".$extension;
+			} else {
+				$filename_check = $directory.$filename;
+			}
+		}
+		
+		return $filename_check;
 	}
 ?>
