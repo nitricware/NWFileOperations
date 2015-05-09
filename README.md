@@ -28,6 +28,7 @@ For information about the functions, please check the documentation inside the .
 * Count the lines of a file
 * Read specified lines of a file
 * Append a number to a filename while filename exists
+
 ## Changelog
 v1.0
 - initial release
