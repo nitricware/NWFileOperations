@@ -1,0 +1,24 @@
+{
+    "name": "nitricware/nwfileoperations",
+    "version": "1.0",
+    "type": "library",
+    "description": "Function collection for different file operations like completing a path or creating a file.",
+    "keywords": ["php","file","utility"],
+    "homepage": "https://github.com/nitricware/nwfileoperations",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Kurt Höblinger",
+            "email": "office@nitricware.com",
+            "homepage": "http://nitricware.com",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "email": "office@nitricware.com"
+    },
+    "require": {
+	    "nitricware/nwlog": ">=1.0.2"
+        "php": ">=5.3.0"
+    }
+}

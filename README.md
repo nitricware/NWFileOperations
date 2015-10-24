@@ -1,4 +1,4 @@
-# NWFileOperations
+# NWFileOperations 1.0c
 ## Introduction
 NWFileOperations provides multiple functions for easy file handling.
 ## License
@@ -7,7 +7,8 @@ NWFileOperations was created by **Kurt Höblinger** as **NitricWare**.
 ## Requirements
 NWFileOperations requires NWLog (available on Github) and PHP 5.x.
 ## Usage
-In order to use NWFileOperations, you just need to include the .php-file.
+Use *Composer* to install NWFileOperations to your project via the ```composer require nitricware/nwfileoperations``` command.
+Alternatively you can also just include the NWFileOperations.php-file.
 ```php
 require "./path/to/NWFileOperations.php“;
 ```
@@ -30,5 +31,7 @@ For information about the functions, please check the documentation inside the .
 * Append a number to a filename while filename exists
 
 ## Changelog
+v1.0c
+- made it available to composer
 v1.0
 - initial release
