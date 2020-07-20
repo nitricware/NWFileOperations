@@ -1,6 +1,5 @@
 {
     "name": "nitricware/nwfileoperations",
-    "version": "1.0",
     "type": "library",
     "description": "Function collection for different file operations like completing a path or creating a file.",
     "keywords": ["php","file","utility"],
@@ -18,7 +17,12 @@
         "email": "office@nitricware.com"
     },
     "require": {
-	    "nitricware/nwlog": ">=1.0.2",
+	    "nitricware/nwlog": "^1.0.3",
         "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "NitricWare\\": "."
+        }
     }
 }

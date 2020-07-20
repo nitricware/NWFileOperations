@@ -1,20 +1,28 @@
-# NWFileOperations 1.0c
+# NWFileOperations 1.0.1
+**Disclaimer: This package is a legacy package for nitricware/nwlog and nitricware/nwdatabase (before version 2.0)**
+
 ## Introduction
 NWFileOperations provides multiple functions for easy file handling.
+
 ## License
 The NWFileOperations is distributed under the **MIT License** which allows you to use it privately and commercially, to distribute, modify and sublicense it. You may not hold me liable and must include my name in the credits of your work.
+
 NWFileOperations was created by **Kurt Höblinger** as **NitricWare**.
+
 ## Requirements
 NWFileOperations requires NWLog (available on Github) and PHP 5.x.
+
 ## Usage
-Use *Composer* to install NWFileOperations to your project via the ```composer require nitricware/nwfileoperations``` command.
+Use *Composer* to install NWFileOperations to your project via the ```composer require nitricware/nwfileoperations``` command or your ```composer.json```.
+
 Alternatively you can also just include the NWFileOperations.php-file.
 ```php
-require "./path/to/NWFileOperations.php“;
+require "./path/to/NWFileOperations.php";
 ```
-Done. No installation required.
+
 ## Functions
 For information about the functions, please check the documentation inside the .php-file!
+
 ### With NWFileOperations you can:
 * Complete a path to match ./path/
 * Delete an object
@@ -31,7 +39,11 @@ For information about the functions, please check the documentation inside the .
 * Append a number to a filename while filename exists
 
 ## Changelog
+v1.0.1
+- composer fix
+
 v1.0c
 - made it available to composer
+
 v1.0
 - initial release
